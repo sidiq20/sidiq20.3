@@ -1,0 +1,25 @@
+(function(){
+	var properties = typeof BLIS_PIXEL_PROPERTIES != 'undefined' ? BLIS_PIXEL_PROPERTIES : window.BLIS_PIXEL_PROPERTIES;
+	var cacheBuster = Math.floor(Math.random() * 100000000000000000000);
+	function createPixel(secondRequest){
+		var baseUrl = properties.baseUrl;
+		var protocol = document.location.protocol === "https:" ? "https://" : "http://";	
+		var action = secondRequest? 'BLIS_PIXEL_SECONDARY' : 'BLIS_PIXEL_PRIMARY';
+		var url = protocol+baseUrl+"?cachebuster="+cacheBuster+"&spid="+properties.pixelId+"&spt=1"+"&a="+action;
+		var pixel = document.createElement("img");
+		pixel.src = url;
+		pixel.width = 1;
+		pixel.height = 1;
+		pixel.style = "display:none";
+		return pixel;
+	}
+	function logEvent(secondRequest){
+		var pixel = createPixel(secondRequest);
+		var s = document.getElementsByTagName("body")[0];
+		s.append(pixel);
+	}
+	setTimeout(function(){
+		logEvent(true);
+	}, properties.delay);
+	logEvent();
+})();
